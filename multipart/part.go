@@ -7,32 +7,20 @@ import (
 	"io"
 )
 
-const (
-	fieldPart = "Content-Disposition: form-data; name=\"%s\"\n\n%s"
-
-	filePartHeader = "Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"\n" +
-		"Content-Type: application/octet-stream\n\n"
-)
-
-type part struct {
-	size   int64
-	reader io.Reader
+func createValuePart(name, value string) (size int64, reader io.Reader) {
+	body := &bytes.Buffer{}
+	body.WriteString(fmt.Sprintf("Content-Disposition: form-data; name=\"%s\"\r\n\r\n", name))
+	body.WriteString(value)
+	return int64(body.Len()), body
 }
 
-func createFieldPart(name, value string) *part {
-	data := []byte(fmt.Sprintf(fieldPart, name, value))
-	return &part{
-		size:   int64(len(data)),
-		reader: bytes.NewReader(data),
+func createFilePart(name string, mimeType string, info FileInfo, data io.Reader) (size int64, reader io.Reader) {
+	// Set default MIME type
+	if mimeType == "" {
+		mimeType = "application/octet-stream"
 	}
-}
-
-func createFilePart(name string, info FileInfo, data io.Reader) *part {
-	// Header data
-	header := []byte(fmt.Sprintf(filePartHeader, name, info.Name()))
-	size := int64(len(header)) + info.Size()
-	return &part{
-		size:   size,
-		reader: chain.JoinReader(bytes.NewReader(header), data),
-	}
+	header := &bytes.Buffer{}
+	header.WriteString(fmt.Sprintf("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n", name, info.Name()))
+	header.WriteString(fmt.Sprintf("Content-Type: %s\r\n\r\n", mimeType))
+	return int64(header.Len()) + info.Size(), chain.JoinReader(header, data)
 }

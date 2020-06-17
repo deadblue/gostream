@@ -17,43 +17,49 @@ const (
 var (
 	hyphens = []byte("--")
 	crlf    = []byte("\r\n")
-
-	emptyBytes []byte
 )
 
+// Implementation of Form interface.
+// Because the Form should be created by New() function, so I declare it
+// as an interface, and hide the implementation struct.
 type implForm struct {
 	// Archive flag
-	// One form can be archived only once.
 	archived bool
-
 	// Boundary
 	boundary []byte
-
-	size  int64
-	parts []*part
+	// Body size
+	size int64
+	// Readers for each part.
+	parts []io.Reader
 }
 
-func (f *implForm) AddString(name string, value string) {
-	f.addPart(createFieldPart(name, value))
+func (f *implForm) AddValue(name string, value string) Form {
+	f.addPart(createValuePart(name, value))
+	return f
 }
 
-func (f *implForm) AddFile(name string, file *os.File) {
+func (f *implForm) AddFile(name string, file *os.File) Form {
+	return f.AddMimeFile(name, "", file)
+}
+
+func (f *implForm) AddMimeFile(name string, mimeType string, file *os.File) Form {
 	info, _ := file.Stat()
-	f.AddFileData(name, info, file)
+	return f.AddFileData(name, mimeType, info, file)
 }
 
-func (f *implForm) AddFileData(name string, info FileInfo, data io.Reader) {
-	f.addPart(createFilePart(name, info, data))
+func (f *implForm) AddFileData(name string, mimeType string, info FileInfo, data io.Reader) Form {
+	f.addPart(createFilePart(name, mimeType, info, data))
+	return f
 }
 
-func (f *implForm) addPart(p *part) {
+func (f *implForm) addPart(size int64, body io.Reader) {
 	if !f.archived {
-		f.parts = append(f.parts, p)
-		f.size += p.size + int64(boundarySize+6)
+		f.parts = append(f.parts, body)
+		f.size += size + int64(boundarySize+6)
 	}
 }
 
-func (f *implForm) Archive() (mimeType string, body io.Reader, size int64, err error) {
+func (f *implForm) Archive() (mimeType string, size int64, body io.ReadCloser, err error) {
 	partCount := len(f.parts)
 	if partCount == 0 {
 		err = ErrEmptyForm
@@ -64,25 +70,22 @@ func (f *implForm) Archive() (mimeType string, body io.Reader, size int64, err e
 		return
 	}
 	f.archived = true
-	// Prepare boundary parts
-	head := bytes.Join([][]byte{
-		hyphens, f.boundary, crlf,
-	}, emptyBytes)
-	middle := bytes.Join([][]byte{
+	// Make boundaries
+	boundary := bytes.Join([][]byte{
 		crlf, hyphens, f.boundary, crlf,
-	}, emptyBytes)
+	}, []byte{})
 	tail := bytes.Join([][]byte{
 		crlf, hyphens, f.boundary, hyphens, crlf,
-	}, emptyBytes)
+	}, []byte{})
 	// Make body
 	readers := make([]io.Reader, partCount*2+1)
 	for i := 0; i < partCount; i++ {
 		if i == 0 {
-			readers[i*2] = bytes.NewReader(head)
+			readers[i*2] = bytes.NewReader(boundary[2:])
 		} else {
-			readers[i*2] = bytes.NewReader(middle)
+			readers[i*2] = bytes.NewReader(boundary)
 		}
-		readers[i*2+1] = f.parts[i].reader
+		readers[i*2+1] = f.parts[i]
 	}
 	readers[partCount*2] = bytes.NewReader(tail)
 	body = chain.JoinReader(readers...)
