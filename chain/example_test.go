@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func Example() {
+func ExampleJoinReader() {
 	r1 := strings.NewReader("hello")
 	r2 := strings.NewReader(",")
 	r3 := strings.NewReader("world")
