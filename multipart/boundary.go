@@ -2,20 +2,16 @@ package multipart
 
 import "math/rand"
 
-const (
-	boundaryChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	boundarySize  = 60
+var (
+	boundaryChars = []byte("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-	hyphens = "--"
-	crlf    = "\r\n"
+	boundaryCharCount = len(boundaryChars)
 )
 
-var charCount = len(boundaryChars)
-
-func makeBoundary() string {
-	buf := make([]byte, boundarySize)
-	for i := 0; i < boundarySize; i++ {
-		buf[i] = boundaryChars[rand.Intn(charCount)]
+func makeBoundary(len int) []byte {
+	buf := make([]byte, len)
+	for i := 0; i < len; i++ {
+		buf[i] = boundaryChars[rand.Intn(boundaryCharCount)]
 	}
-	return string(buf)
+	return buf
 }
