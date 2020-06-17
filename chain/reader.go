@@ -4,13 +4,13 @@ import (
 	"io"
 )
 
-type Reader struct {
+type _Reader struct {
 	readers []io.Reader
 	index   int
 	count   int
 }
 
-func (r *Reader) Read(p []byte) (n int, err error) {
+func (r *_Reader) Read(p []byte) (n int, err error) {
 	// Reach the end of the chain
 	if r.index >= r.count {
 		return 0, io.EOF
@@ -29,7 +29,7 @@ func (r *Reader) Read(p []byte) (n int, err error) {
 	return
 }
 
-func (r *Reader) Close() (err error) {
+func (r *_Reader) Close() (err error) {
 	for i, reader := range r.readers {
 		// Close all closeable readers
 		if c, ok := reader.(io.Closer); ok {
@@ -40,19 +40,21 @@ func (r *Reader) Close() (err error) {
 	return
 }
 
-func JoinReader(reader ...io.Reader) *Reader {
+// Join multiple io.Reader into one.
+// It's similar to io.MultiReader(), but the returned reader also implements io.Closer.
+func JoinReader(reader ...io.Reader) io.ReadCloser {
 	rs, count := make([]io.Reader, 0), 0
 	for _, r := range reader {
 		// Flatten the readers
-		if lr, ok := r.(*Reader); ok {
-			rs = append(rs, lr.readers...)
-			count += lr.count
+		if cr, ok := r.(*_Reader); ok {
+			rs = append(rs, cr.readers...)
+			count += cr.count
 		} else {
 			rs = append(rs, r)
 			count += 1
 		}
 	}
-	return &Reader{
+	return &_Reader{
 		readers: rs,
 		index:   0,
 		count:   count,
