@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-// Multipart form, caller can create this by New() function.
+// Multipart form, caller can call New() function to create it.
 type Form interface {
 
 	// Add a value part.
@@ -14,11 +14,14 @@ type Form interface {
 	// Add a file part.
 	AddFile(name string, file *os.File) Form
 
+	// Add a file part by info and data.
+	AddFileData(name string, info FileInfo, data io.Reader) Form
+
 	// Add a file part with specific MIME type.
 	AddMimeFile(name string, mimeType string, file *os.File) Form
 
-	// Add a file part by info and data.
-	AddFileData(name string, mimeType string, info FileInfo, data io.Reader) Form
+	// Add a file part with specific MIME type by info and data.
+	AddMimeFileData(name string, mimeType string, info FileInfo, data io.Reader) Form
 
 	// Archive the form, return metadata and data stream.
 	// This method can be called only once, all add operations will not take effect after archived.
