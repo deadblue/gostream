@@ -42,17 +42,17 @@ func (f *implForm) AddFile(name string, file *os.File) Form {
 	return f.AddMimeFile(name, "", file)
 }
 
-func (f *implForm) AddFileData(name string, info FileInfo, data io.Reader) Form {
-	return f.AddMimeFileData(name, "", info, data)
+func (f *implForm) AddFileData(name string, fileName string, fileSize int64, data io.Reader) Form {
+	return f.AddMimeFileData(name, "", fileName, fileSize, data)
 }
 
 func (f *implForm) AddMimeFile(name string, mimeType string, file *os.File) Form {
 	info, _ := file.Stat()
-	return f.AddMimeFileData(name, mimeType, info, file)
+	return f.AddMimeFileData(name, mimeType, info.Name(), info.Size(), file)
 }
 
-func (f *implForm) AddMimeFileData(name string, mimeType string, info FileInfo, data io.Reader) Form {
-	f.addPart(createFilePart(name, mimeType, info, data))
+func (f *implForm) AddMimeFileData(name string, mimeType string, fileName string, fileSize int64, data io.Reader) Form {
+	f.addPart(createFilePart(name, mimeType, fileName, fileSize, data))
 	return f
 }
 

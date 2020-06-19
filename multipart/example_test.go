@@ -23,8 +23,7 @@ func Example() {
 
 	// Add memory file to form
 	data := []byte("Hello, world!")
-	info := SimpleFileInfo("hello.txt", int64(len(data)))
-	form.AddFileData("memfile", info, bytes.NewReader(data))
+	form.AddFileData("memfile", "hello.txt", int64(len(data)), bytes.NewReader(data))
 
 	// Create HTTP request
 	req, err := MakeRequest("http://server/upload", form)

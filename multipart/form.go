@@ -15,13 +15,13 @@ type Form interface {
 	AddFile(name string, file *os.File) Form
 
 	// Add a file part by info and data.
-	AddFileData(name string, info FileInfo, data io.Reader) Form
+	AddFileData(name string, fileName string, fileSize int64, data io.Reader) Form
 
 	// Add a file part with specific MIME type.
 	AddMimeFile(name string, mimeType string, file *os.File) Form
 
 	// Add a file part with specific MIME type by info and data.
-	AddMimeFileData(name string, mimeType string, info FileInfo, data io.Reader) Form
+	AddMimeFileData(name string, mimeType string, fileName string, fileSize int64, data io.Reader) Form
 
 	// Archive the form, return metadata and data stream.
 	// This method can be called only once, all add operations will not take effect after archived.
