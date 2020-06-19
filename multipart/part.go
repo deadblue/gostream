@@ -14,13 +14,13 @@ func createValuePart(name, value string) (size int64, reader io.Reader) {
 	return int64(body.Len()), body
 }
 
-func createFilePart(name string, mimeType string, info FileInfo, data io.Reader) (size int64, reader io.Reader) {
+func createFilePart(name string, mimeType string, fileName string, fileSize int64, data io.Reader) (size int64, reader io.Reader) {
 	// Set default MIME type
 	if mimeType == "" {
 		mimeType = "application/octet-stream"
 	}
 	header := &bytes.Buffer{}
-	header.WriteString(fmt.Sprintf("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n", name, info.Name()))
+	header.WriteString(fmt.Sprintf("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n", name, fileName))
 	header.WriteString(fmt.Sprintf("Content-Type: %s\r\n\r\n", mimeType))
-	return int64(header.Len()) + info.Size(), chain.JoinReader(header, data)
+	return int64(header.Len()) + fileSize, chain.JoinReader(header, data)
 }
