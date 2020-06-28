@@ -23,10 +23,12 @@ type Form interface {
 	// Add a file part with specific MIME type by info and data.
 	AddMimeFileData(name string, mimeType string, fileName string, fileSize int64, data io.Reader) Form
 
-	// Archive the form, return metadata and data stream.
-	// This method can be called only once, all add operations will not take effect after archived.
-	// In most cases, caller should call MakeRequest function instead of this method.
-	// If caller calls this method for other use, DO NOT forget to close the returned body.
+	// Archive the form, return metadata and data stream. This method can be
+	// called once and only once, all add operations on this form will not
+	// take effect after archived.
+	// In most cases, caller should call NewRequest function instead of this
+	// method. If caller calls this method for other use, DO NOT forget to
+	// close the returned body.
 	Archive() (mimeType string, size int64, body io.ReadCloser, err error)
 }
 
