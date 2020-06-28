@@ -2,12 +2,10 @@ package multipart
 
 import (
 	"net/http"
-	"strconv"
 )
 
 const (
-	headerContentType   = "Content-Type"
-	headerContentLenght = "Content-Length"
+	headerContentType = "Content-Type"
 )
 
 // Helper function to make a HTTP request for posting form to url.
@@ -22,7 +20,7 @@ func NewRequest(url string, form Form) (req *http.Request, err error) {
 	}
 	if req, err = http.NewRequest(http.MethodPost, url, body); err == nil {
 		req.Header.Add(headerContentType, mimeType)
-		req.Header.Add(headerContentLenght, strconv.FormatInt(size, 10))
+		req.ContentLength = size
 	}
 	return
 }
