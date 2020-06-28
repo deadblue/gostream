@@ -15,7 +15,7 @@ const (
 // If req is used by standard http.Client, the form body will be closed
 // automatically after used.
 // Otherwise, caller may need to close req.Body after used.
-func MakeRequest(url string, form Form) (req *http.Request, err error) {
+func NewRequest(url string, form Form) (req *http.Request, err error) {
 	mimeType, size, body, err := form.Archive()
 	if err != nil {
 		return

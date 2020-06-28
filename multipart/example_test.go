@@ -26,7 +26,7 @@ func Example() {
 	form.AddFileData("memfile", "hello.txt", int64(len(data)), bytes.NewReader(data))
 
 	// Create HTTP request
-	req, err := MakeRequest("http://server/upload", form)
+	req, err := NewRequest("http://server/upload", form)
 	if err != nil {
 		panic(err)
 	}
