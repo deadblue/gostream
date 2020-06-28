@@ -1,6 +1,8 @@
 package observe
 
-// Observer is used to moniter the transfer progress, caller should implement his own observer.
+// Caller should implement his own Observer to moniter the transfer process.
+// All methods on Observer will be called in blocking mode, caller should
+// implement them carefully.
 type Observer interface {
 	// Transfer will be called when there are n bytes data tranfered.
 	Transfer(n int)
