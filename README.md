@@ -2,8 +2,8 @@
 
 Stream utilities for Go.
 
-![Version](http://img.shields.io/badge/Release-v0.1.0-brightgreen.svg?style=flat-square)
-[![Reference](http://img.shields.io/badge/Go-Reference-blue.svg?style=flat-square)](https://pkg.go.dev/github.com/deadblue/gostream)
+![Version](https://img.shields.io/badge/Release-v0.1.1-brightgreen.svg?style=flat-square)
+[![Reference](https://img.shields.io/badge/Go-Reference-blue.svg?style=flat-square)](https://pkg.go.dev/mod/github.com/deadblue/gostream)
 ![License](https://img.shields.io/:License-MIT-green.svg?style=flat-square)
 
 ## Packages
@@ -62,7 +62,7 @@ Provides observed `io.ReadCloser` and `io.WriteCloser` that caller can monitor t
 
 Example:
 
-```
+```go
 file, err := os.Open("/path/to/file")
 if err != nil {
     panic(err)
