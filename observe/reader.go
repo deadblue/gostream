@@ -41,7 +41,7 @@ func (r *reader) Close() (err error) {
 	return
 }
 
-// Create an observerd read stream.
+// Reader wraps r and notify o during read operations.
 func Reader(r io.Reader, o Observer) io.ReadCloser {
 	var flag int32 = 0
 	return &reader{

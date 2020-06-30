@@ -24,7 +24,7 @@ func (w *writer) Close() (err error) {
 	return err
 }
 
-// Create an observerd write stream.
+// Writer wraps w and notify o during write operations.
 func Writer(w io.WriteCloser, o Observer) io.WriteCloser {
 	return &writer{
 		w: w,
