@@ -6,14 +6,16 @@ import (
 )
 
 type reader struct {
+	// Underlying reader
 	r io.Reader
+	// Transfer observer
 	o Observer
-	//
-	flag *int32
+	// Done flag
+	flag int32
 }
 
 func (r *reader) fireDone(err error) {
-	if atomic.CompareAndSwapInt32(r.flag, 0, 1) {
+	if atomic.CompareAndSwapInt32(&r.flag, 0, 1) {
 		if err == nil || err == io.EOF {
 			r.o.Done(nil)
 		} else {
@@ -43,11 +45,8 @@ func (r *reader) Close() (err error) {
 
 // Reader wraps r and notify o during read operations.
 func Reader(r io.Reader, o Observer) io.ReadCloser {
-	var flag int32 = 0
 	return &reader{
 		r: r,
 		o: o,
-		// Done flag
-		flag: &flag,
 	}
 }
