@@ -9,7 +9,7 @@ import (
 Reader is a reader which implements:
 	- io.Reader
 	- io.ByteReader
-And provide more read method for binary data.
+And provides more read method for binary data.
 */
 type Reader struct {
 	r io.Reader
@@ -53,9 +53,15 @@ func (r *Reader) ReadUint64() (u uint64, err error) {
 }
 
 // NewReader creates a binary reader with byte order.
-func NewReader(r io.Reader, order binary.ByteOrder) *Reader {
-	return &Reader{
-		r: r,
-		o: order,
+func NewReader(r io.Reader, order binary.ByteOrder) (reader *Reader) {
+	var ok bool
+	if reader, ok = r.(*Reader); ok {
+		reader.o = order
+	} else {
+		reader = &Reader{
+			r: r,
+			o: order,
+		}
 	}
+	return
 }

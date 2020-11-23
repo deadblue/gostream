@@ -6,10 +6,9 @@ import (
 )
 
 /*
-Writer is a binary writer that implements:
+Writer is a binary writer which implements:
   - io.Writer
   - io.ByteWriter
-  - io.StringWriter
 And provides more write methods for binary data.
 */
 type Writer struct {
@@ -50,14 +49,16 @@ func (w *Writer) WriteUint64(u uint64) (err error) {
 	return
 }
 
-func (w *Writer) WriteString(s string) (n int, err error) {
-	return w.Write([]byte(s))
-}
-
 // NewWriter creates a binary writer with byte order.
-func NewWriter(w io.Writer, order binary.ByteOrder) *Writer {
-	return &Writer{
-		w: w,
-		o: order,
+func NewWriter(w io.Writer, order binary.ByteOrder) (writer *Writer) {
+	var ok bool
+	if writer, ok = w.(*Writer); ok {
+		writer.o = order
+	} else {
+		writer = &Writer{
+			w: w,
+			o: order,
+		}
 	}
+	return
 }
