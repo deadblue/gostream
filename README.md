@@ -2,7 +2,7 @@
 
 Stream utilities for Go.
 
-![Version](https://img.shields.io/badge/Release-v0.1.1-brightgreen.svg?style=flat-square)
+![Version](https://img.shields.io/badge/Release-v0.1.2-brightgreen.svg?style=flat-square)
 [![Reference](https://img.shields.io/badge/Go-Reference-blue.svg?style=flat-square)](https://pkg.go.dev/mod/github.com/deadblue/gostream)
 ![License](https://img.shields.io/:License-MIT-green.svg?style=flat-square)
 
@@ -71,6 +71,27 @@ if err != nil {
 r := observe.Reader(file, &YourObserver{})
 ioutil.ReadAll(r)
 defer quietly.Close(r)
+```
+
+### binary
+
+Read/write binary data on a stream.
+
+Example:
+
+```go
+import github.com/deadblue/gostream/binary
+
+buf := bytes.NewReader([]byte{
+    0x12, 0x34, 0x56, 0x78,
+})
+br := NewReader(buf, LittleEndian)
+if u, err := br.ReadUint32(); err != nil {
+    log.Fatal(err)
+} else {
+    log.Printf("Uint value: 0x%x", u)
+    // Output: "Uint value: 0x78563412"
+}
 ```
 
 ## License
