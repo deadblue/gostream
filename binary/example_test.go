@@ -15,9 +15,9 @@ func ExampleReader_ReadUint32() {
 		log.Fatal(err)
 	} else {
 		log.Printf("Uint value: 0x%x", u)
-		// Output:
-		// Uint value: 0x78563412
 	}
+	// Output:
+	// Uint value: 0x78563412
 }
 
 func ExampleWriter_WriteUint32() {
@@ -27,7 +27,7 @@ func ExampleWriter_WriteUint32() {
 		log.Fatal(err)
 	} else {
 		log.Printf("Binary data: %s", hex.EncodeToString(buf.Bytes()))
-		// Output:
-		// Binary data: 12345678
 	}
+	// Output:
+	// Binary data: 12345678
 }
