@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func ExampleReader() {
+func ExampleReader_ReadUint32() {
 	buf := bytes.NewReader([]byte{
 		0x12, 0x34, 0x56, 0x78,
 	})
@@ -20,7 +20,7 @@ func ExampleReader() {
 	}
 }
 
-func ExampleWriter() {
+func ExampleWriter_WriteUint32() {
 	buf := &bytes.Buffer{}
 	bw := NewWriter(buf, BigEndian)
 	if err := bw.WriteUint32(0x12345678); err != nil {
