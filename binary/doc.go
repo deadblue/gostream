@@ -1,2 +1,2 @@
-// Package binary helps developer for reading/writing binary on stream.
+// Package binary helps developer for reading/writing binary data on a stream.
 package binary

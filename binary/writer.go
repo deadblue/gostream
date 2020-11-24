@@ -3,6 +3,7 @@ package binary
 import (
 	"encoding/binary"
 	"io"
+	"math"
 )
 
 /*
@@ -47,6 +48,26 @@ func (w *Writer) WriteUint64(u uint64) (err error) {
 	w.o.PutUint64(buf, u)
 	_, err = w.Write(buf)
 	return
+}
+
+func (w *Writer) WriteInt16(i int16) (err error) {
+	return w.WriteUint16(uint16(i))
+}
+
+func (w *Writer) WriteInt32(i int32) (err error) {
+	return w.WriteUint32(uint32(i))
+}
+
+func (w *Writer) WriteInt64(i int64) (err error) {
+	return w.WriteUint64(uint64(i))
+}
+
+func (w *Writer) WriteFloat32(f float32) (err error) {
+	return w.WriteUint32(math.Float32bits(f))
+}
+
+func (w *Writer) WriteFloat64(f float64) (err error) {
+	return w.WriteUint64(math.Float64bits(f))
 }
 
 // NewWriter creates a binary writer with byte order.
