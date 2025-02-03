@@ -10,17 +10,17 @@ type writer struct {
 func (w *writer) Write(p []byte) (n int, err error) {
 	n, err = w.w.Write(p)
 	if n > 0 {
-		w.o.Transfer(n)
+		w.o.OnTransfer(n)
 	}
 	if err != nil {
-		w.o.Done(err)
+		w.o.OnStop(err)
 	}
 	return
 }
 
 func (w *writer) Close() (err error) {
 	err = w.w.Close()
-	w.o.Done(err)
+	w.o.OnStop(err)
 	return err
 }
 

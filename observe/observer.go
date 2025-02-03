@@ -4,8 +4,8 @@ package observe
 // All methods on Observer will be called in blocking mode, caller should
 // take care in their implementation.
 type Observer interface {
-	// Transfer will be called when there are n bytes data tranfered.
-	Transfer(n int)
-	// Done will be called when transfer is done, or terminated by an error.
-	Done(err error)
+	// OnTransfer will be called when there are n bytes data tranfered.
+	OnTransfer(n int)
+	// OnStop will be called when transfer is done, or terminated by an error.
+	OnStop(err error)
 }

@@ -2,20 +2,21 @@ package observe
 
 import (
 	"fmt"
-	"github.com/deadblue/gostream/quietly"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/deadblue/gostream/quietly"
 )
 
 type DownloadObserver struct {
 	total, complete int64
 }
 
-func (o *DownloadObserver) Transfer(n int) {
+func (o *DownloadObserver) OnTransfer(n int) {
 	const ProgressBarSize = 60
 
 	o.complete += int64(n)
@@ -35,7 +36,7 @@ func (o *DownloadObserver) Transfer(n int) {
 		fmt.Printf("\rDownloaded size => %d", o.complete)
 	}
 }
-func (o *DownloadObserver) Done(_ error) {
+func (o *DownloadObserver) OnStop(_ error) {
 	fmt.Println()
 }
 

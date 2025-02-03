@@ -17,9 +17,9 @@ type reader struct {
 func (r *reader) fireDone(err error) {
 	if atomic.CompareAndSwapInt32(&r.flag, 0, 1) {
 		if err == nil || err == io.EOF {
-			r.o.Done(nil)
+			r.o.OnStop(nil)
 		} else {
-			r.o.Done(err)
+			r.o.OnStop(err)
 		}
 	}
 }
@@ -27,7 +27,7 @@ func (r *reader) fireDone(err error) {
 func (r *reader) Read(p []byte) (n int, err error) {
 	n, err = r.r.Read(p)
 	if n > 0 {
-		r.o.Transfer(n)
+		r.o.OnTransfer(n)
 	}
 	if err != nil {
 		r.fireDone(err)
